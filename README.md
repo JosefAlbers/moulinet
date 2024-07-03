@@ -26,42 +26,58 @@ git clone https://github.com/JosefAlbers/moulinet.git
 
 Install the required dependencies by following the instructions in the `requirements.txt` file.
 
+3. **Play the demo game**
+
+```bash
+python main.py
+```
+
 3. **Create Your Own Game:**
 
-Utilize the engine's modular design and tools to create your own unique games. The engine provides a flexible framework that allows you to focus on your game's design, story, and mechanics.
-
 ```python
-from moulinet import GameEngine
+# `Create sea (altitude -1)
+height_map = np.array([[-1.]*16]*16)
 
-foreground = [
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2, -1, -1],
-    [-1,  0, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12,  2, -1],
-    [-1, 10, 10, 11, 11, 11, 21, 21, 21, 21, 11, 11, 11, 12, 12, -1],
-    [-1, 10, 20, 21, 21, 22, -2, -2, -2, -2, 20, 21, 21, 22, 12, -1],
-    [-1, 10, -1, -1, -1, -1, 11, 11, 11, 11, -1, -1, -1, -1, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, -1],
-    [-1, 10, 11, 11, 11, 21, 21, 21, 21, 21, 21, 11, 11, 11, 12, -1],
-    [-1, 20, 21, 21, 22, -2, -2, -2, -2, -2, -2, 20, 21, 21, 22, -1]
-]
+# `Create sand (altitude 0)
+height_map[2:16] += 1
 
+# `Create hills (altidues 1 and 2)
+height_map[1:14, 1:-1] = 1.
+height_map[0:4,2:14] = 2.
+
+# `Create stairs
+height_map[13, 5:11] = 0.5
+height_map[3, 6:10] = 1.5
+
+# `Add objects (trees, towers, houses with NPCs, etc)
 dict_objects = {
-    'player': {'positions': [(8, 14)]},
-    'castle': {'positions': [(8, 0)]},
-    'tower': {'positions': [(4, 1), (12, 1)]},
+    'player': {
+        'positions': [(8, 14)],
+    },
+    'castle': {
+        'positions': [(8, 0)],
+        'image': 'Castle_Blue.png',
+    },
+    'tower': {
+        'positions': [(4, 1.5), (12, 1.5)],
+        'image': 'Tower_Blue.png',
+    },
     'house': {
-        'positions': [(4, 6), (4, 9), (12, 7)],
-        'npc_names': ["Alice", "Bob", "Charlie"]
+        'positions': [(4, 6), (3, 10), (12, 7)],
+        'image': 'House_Blue.png',
+        'npc_names': generate_random_names(3)
+    },
+    'tree': {
+        'positions': [(14,5), (12,10),(13,9),(13,11)],
+        'image': 'Tree.png',
     }
 }
 
-game = GameEngine(foreground)
-game.run(dict_objects)
+# `Build game
+game = GameEngine(height_map, dict_objects)
+
+# `Run game
+game()
 ```
 
 ![Alt text](assets/Screenshot%20Start.png)
